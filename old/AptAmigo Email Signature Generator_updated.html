@@ -1,0 +1,277 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+  <title>Form Example</title>
+  <link href="https://fonts.googleapis.com/css2?family=Montserrat&family=Figtree&display=swap" rel="stylesheet">
+
+  <style>
+    h1 {
+      font-family: "montserrat", sans-serif;
+      font-size: 28px;
+      font-weight: 400;
+      margin: 10px 5px 0px 30px;
+      color: #333333;
+    }
+
+    label {
+      font-family: "figtree", sans-serif;
+      font-size: 14px;
+      font-weight: thin;
+      text-transform: uppercase;
+      color: #7e7e7e;
+      letter-spacing: .1em;
+    }
+
+    input[type="submit"] {
+      font-family: "figtree", sans-serif;
+      font-size: 15px;
+      font-weight: semi-bold;
+      color: #333333;
+      letter-spacing: .2em;
+      padding: 5px 10px 5px 10px;
+      margin: 0px 0px 0px 50px;
+      background-color: #ffffff;
+      border-style: solid;
+      border-width: 1.5px;
+      border-color: #333333;
+      margin: 10px 5px 10px 29px;
+      text-transform: uppercase;
+    }
+
+    input[type="submit"]:hover {
+      background-color: #333333;
+      color: #ffffff;
+      cursor: pointer;
+    }
+
+    input {
+      margin: 12px 10px 5px 2px;
+    }
+
+    .info-button {
+      width: 15px;
+      height: 15px;
+      padding: 5px;
+      margin: 0px 2px;
+      position: relative;
+      border: none;
+      border-radius: 15%;
+      background: #7e7e7e;
+      font-size: 10px;
+      font-family: "Montserrat", sans-serif;
+      font-weight: bold;
+      line-height: .5em;
+      color: #ffffff;
+      vertical-align: center;
+      cursor: pointer;
+
+    }
+
+    .info-button::after {
+      content: "";
+      position: absolute;
+      top: 100%;
+      left: 50%;
+      transform: translateX(-50%);
+      background-color: #e5e7eb;
+      color: #333333;
+      padding: 5px;
+      border-radius: 5px;
+      font-size: 12px;
+      opacity: 0;
+      visibility: hidden;
+      transition: opacity 0.2s ease-out, visibility 0.2s ease-out;
+    }
+
+    .info-button:hover::after {
+      opacity: 1;
+      visibility: visible;
+    }
+
+    .info-button:hover::before {
+      content: attr(data-tooltip);
+      position: absolute;
+      width: 200px;
+      top: 100%;
+      left: 50%;
+      transform: translateX(-50%);
+      background-color: #f8f8f8;
+      color: #545454;
+      padding: 15px;
+      text-align: left;
+      border-radius: 5px;
+      font-size: 10px;
+      font-weight: normal;
+      line-height: 1.5em;
+      overflow-wrap: break-word;
+    }
+
+    .phone-number span:nth-child(2)::before,
+    .phone-number span:nth-child(3)::before {
+      content: "-";
+    }
+  </style>
+</head>
+
+<body>
+  <br>
+  <img style="width:180px; margin: 0px 5px 0px 25px;"
+    src="https://blog.aptamigo.com/wp-content/uploads/2023/04/new-logo-plum-email.png">
+  <h1>Email Signature Generator</h1>
+  <hr style="border: .9px solid #d1b27f; margin: 10px 0px 50px 30px;">
+  <form id="profile-form">
+
+    <table style="text-align: left; margin: 0px 5px 0px 30px;">
+      <tr>
+        <td><label for="name">Name:</label></td>
+        <td><input type="text" id="name" name="name" required></td>
+      </tr>
+      <tr>
+        <td><label for="title">Title:</label></td>
+        <td><input type="text" id="title" name="title" required></td>
+      </tr>
+      <tr>
+        <td><label for="city">City:</label></td>
+        <td><input type="text" id="city" name="city"></td>
+      </tr>
+      <tr>
+        <td><label for="phone">Phone:</label></td>
+        <td><input type="tel" id="phone" name="phone" required></td>
+      </tr>
+      <tr>
+        <td><label for="email">Email:</label></td>
+        <td><input type="email" id="email" name="email" required></td>
+      </tr>
+      <tr>
+        <td><label for="image-url">Image URL:</label></td>
+        <td><input type="text" id="image-url" name="image-url" required><button class="info-button"
+            data-tooltip="Navigate to the 'Staff' page in the Portal, search your name and open your profile, right-click on your photo and copy the URL. If you do not have a photo, log out and back in using "
+            Sign in With Google" (make sure your Gmail has a photo attached.)">?</button></td>
+      </tr>
+      <tr>
+        <td><label for="pronouns">Pronouns:<br><span style="font-size: 8px;">(Optional)</span></label></td>
+        <td><input type="text" id="pronouns" name="pronouns"></td>
+      </tr>
+    </table>
+
+    <br>
+    <input type="submit" value="Submit">
+  </form>
+
+  <br><br><br><br>
+
+  <table id="signature" style="width: 366px !important; margin-left: 5% !important;">
+    <!-- Profile cards will be inserted here -->
+  </table>
+
+  <script>
+    const form = document.querySelector('#profile-form');
+
+    form.addEventListener('submit', function (event) {
+      event.preventDefault();
+
+      const name = form.elements.name.value;
+      const title = form.elements.title.value;
+      const city = form.elements.city.value;
+      const phone = form.elements.phone.value.replace(/\D/g, '').replace(/(\d{3})(\d{3})(\d{4})/, '($1) $2-$3');
+      const email = form.elements.email.value;
+      const imageUrl = form.elements['image-url'].value;
+      const pronouns = form.elements.pronouns.value;
+      const htmlCode = `
+              <table id="signature" style="width: 366px !important; margin-left: 5% !important;">
+                <tbody>
+                  <tr>
+                    <td width="30"></td>
+                    <td style="width: 98px !important; align-items: center;">
+                      <div style="width: 98px; padding: 10px; background-color: none; border-radius: 130px; margin-top: 25px;">
+                        <div style="border-radius: 50%; overflow: hidden;">
+                          <img width="98" style="vertical-align: bottom;"
+                            src="${imageUrl}">
+                        </div>
+                      </div>
+                      <div style="text-align: center;">
+                        <img width="98" style="height:auto;"
+                          src="https://blog.aptamigo.com/wp-content/uploads/2023/04/new-logo-plum-email.png">
+                      </div>
+                    </td>
+                    <td width="30"></td>
+                    <td style="width: 208px !important; text-align: left; height: auto;">
+                      <p
+                        style="font-family: montserrat, sans-serif; font-weight: 450; text-transform: uppercase; font-size: 14px; letter-spacing: .15rem; color: #333333; line-height: 35px; margin-top: 30px; margin-bottom: 0px;">
+                        ${name}
+                      </p>
+                      <p
+                        style="font-family: figtree, sans-serif; font-weight: 300; font-size: 11px; color: #545454; line-height: 20px; margin: 0px;">
+                        ${title}
+                      </p>
+                      <p
+                        style="font-family: figtree, sans-serif; font-weight: 200; text-transform: uppercase; font-size: 9px; color: #545454;letter-spacing: .04rem; line-height: 9px; display: flex; justify-content: space-between; align-items: center;">
+                        ${city}<span id="pronouns"
+                          style="color: #cacaca;text-transform: none; text-align: left !important;">${pronouns}</span>
+                      </p>
+                      <hr style="width:208px; border-width: 0; background: #000; color: #000; height:.06em">
+                      <p
+                        style="line-height:14.5px; font-family: figtree, sans-serif; font-weight: 300; font-size: 9px; color: #7e7e7e !important; text-decoration: none;">
+                        <img width="10" style="height: auto; vertical-align: middle;"
+                          src="https://blog.aptamigo.com/wp-content/uploads/2023/04/phone-icon-plum.png">
+                        <span style="margin-left: 10px;">${phone}</span>
+                        <br>
+                        <img width="10" style="height: auto; vertical-align: middle;"
+                          src="https://blog.aptamigo.com/wp-content/uploads/2023/04/mail-icon-plum.png">
+                        <span
+                          style="font-family: figtree, sans-serif; font-weight: 300; font-size: 9px; color: #7e7e7e !important; line-height: .5em; text-decoration: none; margin-left: 10px;">
+                          <a style="text-decoration: none !important; color: #7e7e7e !important;" href="mailto:${email}">
+                            ${email}</a></span>
+                        <br>
+                        <img width="10" style="height: auto; vertical-align: middle;"
+                          src="https://blog.aptamigo.com/wp-content/uploads/2023/04/cursor-icon-plum.png">
+                        <span
+                          style="font-family: figtree, sans-serif; font-weight: 300; font-size: 9px; color: #7e7e7e !important; line-height: .5em; text-decoration: none; margin-left: 10px;">
+                          <a style="text-decoration: none !important; color: #7e7e7e !important;"
+                            href="https://www.aptamigo.com">www.aptamigo.com</a></span>
+                        <br>
+                      </p>
+                    </td>
+                  </tr>
+                </tbody>
+              </table>`;
+
+      // Insert the HTML code wherever you want
+      document.querySelector('#signature').innerHTML += htmlCode;
+
+      // Clear the form inputs
+      form.reset();
+    });
+  </script>
+  <br>
+  <br>
+
+  <button style="margin: 10px 0px 10px 30px;" id="copy-signature-btn">Copy Signature</button>
+
+  <script>
+    const copySignatureBtn = document.getElementById('copy-signature-btn');
+    const signatureTable = document.getElementById('signature');
+
+    copySignatureBtn.addEventListener('click', () => {
+      // Create a new range and select the table element
+      const range = document.createRange();
+      range.selectNode(signatureTable);
+
+      // Select the contents of the range
+      window.getSelection().removeAllRanges();
+      window.getSelection().addRange(range);
+
+      // Copy the selection to the clipboard
+      document.execCommand('copy');
+
+      // Deselect the range
+      window.getSelection().removeAllRanges();
+
+      // Log a message to the console
+      console.log('Signature copied to clipboard');
+    });
+  </script>
+</body>
+
+</html>
